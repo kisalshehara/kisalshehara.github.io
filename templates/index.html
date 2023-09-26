@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-gn5386jzgjwmqt9p2bz5mks7r81np4g438umz9zi4hr3uq7zy3k5b5w5b5b5b5b5b5b5b5w5" crossorigin="anonymous">
+
+<style>
+    /* Style the attendance box */
+.attendance-box {
+    background-color: #fff;
+    border: 1px solid #007bff; /* Blue frame */
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Style the date input and password input */
+#date, input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style the "Mark Attendance" button */
+.attendance-box button[type="submit"] {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+/* Hover effect for the "Mark Attendance" button */
+.attendance-box button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Style the add student box */
+.add-student-box {
+    background-color: #fff;
+    border: 1px solid #ccc; /* Default frame color */
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Style the "Add Student" button */
+.add-student-box button[type="submit"] {
+    background-color: #007bff; /* Blue color for the button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+/* Hover effect for the "Add Student" button */
+.add-student-box button[type="submit"]:hover {
+    background-color: #0056b3; /* Hover color */
+}
+
+/* Style the search box */
+.search-box {
+    background-color: #fff;
+    border: 1px solid #ccc; /* Default frame color */
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Style the "Search" button */
+.search-box button[type="submit"] {
+    background-color: #007bff; /* Blue color for the button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+/* Hover effect for the "Search" button */
+.search-box button[type="submit"]:hover {
+    background-color: #0056b3; /* Hover color */
+}
+
+/* Style the admin operations box */
+.admin-operations-box {
+    background-color: #fff;
+    border: 1px solid #ccc; /* Default frame color */
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Style the "Change Password" button */
+.admin-operations-box button[type="submit"] {
+    background-color: #007bff; /* Blue color for the button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+/* Hover effect for the "Change Password" button */
+.admin-operations-box button[type="submit"]:hover {
+    background-color: #0056b3; /* Hover color */
+}
+
+/* Style rounded input fields */
+input[type="text"],
+input[type="date"],
+input[type="password"],
+select {
+    border-radius: 20px;
+    
+    border: 1px solid #ccc;
+    width: 90%;
+    margin : 2px ;
+    align : center;
+}
+
+/* Style rounded buttons */
+button[type="submit"],
+button[type="button"] {
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+}
+
+/* Hover effect for buttons */
+button[type="submit"]:hover,
+button[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+.flash-message {
+    background-color: #fff;
+    border: 1px solid #ccc; /* Default frame color */
+    padding: 20px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+/* Style the "Success" flash message */
+.flash-message.success {
+    background-color: #dff0d8; /* Green color for the "Success" message */
+    border-color: #d6e9c6;
+}
+
+/* Style the "Danger" flash message */
+.flash-message.danger {
+    background-color: #ffcccc; /* Lighter red color for the "Danger" message */
+    border-color: #ff9999; /* Border color */
+}
+
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="font-size:70px ;">Student Attendance</h1>
+
+        <!-- Flash Messages -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul><b>
+                {% for category, message in messages %}
+                    <li class="flash-message {{ category }}">
+                        {{ message }}
+                    </li>
+                {% endfor %}
+                <b></ul>
+        {% endif %}
+        {% endwith %}
+        
+            
+       
+        
+        
+        
+     
+    
+
+        <div class="add-student-box">
+            <h2>Add Student</h2>
+            <form method="POST" action="/add_student">
+                <input type="text" name="name" placeholder="Student Name" required>
+                <button type="submit">Add Student</button>
+            </form>
+        </div>
+        <div class="attendance-box">
+            <h2>Mark Attendance</h2>
+            <form method="POST" action="/mark_attendance">
+                <select name="student_name" required>
+                    <option value="" disabled selected>Select Student</option>
+                    {% for student in students %}
+                        <option value="{{ student.name }}">{{ student.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="date" id="date" name="date" required>
+                <input type="password" name="password" placeholder="Enter Attendance Key" required>
+                <button type="submit">Mark Attendance</button>
+            </form>
+        </div>
+
+        <div class="search-box">
+            <h2>Search Student Attendance</h2>
+            <form id="search-form">
+                <input type="text" id="search-input" placeholder="Search by student name">
+                <button type="button" id="search-button"><i class="fas fa-sync"></i> Search</button>
+            </form>
+        </div>
+        
+        
+        
+        <h2>View Attendance</h2>
+        <br>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Index</th>
+                    <th>Name</th>
+                    <th>Attendance Dates</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ student.name }}</td>
+        <td>
+            <ul>
+                {% for attendance in student.attendance %}
+                    <li>{{ attendance.date.strftime('%Y-%m-%d') }}</li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td>
+            <form method="POST" action="/remove_student/{{ student.id }}">
+                <button type="submit">Remove</button>
+            </form>
+        </td>
+    </tr>
+{% endfor %}
+
+            </tbody>
+        </table> <br><br>
+        <div class="admin-ops-box">
+            
+                <h2>Admin Operations</h2>
+                <form method="POST" action="/change_password">
+                    <input type="password" name="admin_password" placeholder="Enter Admin Password" required>
+                    <input type="password" name="new_password" placeholder="Enter New Attendance Key" required>
+                    <button type="submit" style="background-color:red">Change Attendance Key</button>
+                </form>
+            
+            
+        </div>
+       
+    </div>
+    <script>
+        function setCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear().toString().padStart(4, '0');
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const day = today.getDate().toString().padStart(2, '0');
+            const currentDate = `${year}-${month}-${day}`;
+            document.getElementById('date').value = currentDate;
+        }
+
+        window.addEventListener('load', setCurrentDate);
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
